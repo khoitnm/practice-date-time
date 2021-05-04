@@ -25,7 +25,7 @@ public class JsonHelper {
     try {
       return objectMapper.readValue(jsonString, resultClass);
     } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Cannot parse json. Rootcause:" + e.getMessage() + ". Json: \n" + jsonString, e);
+      throw new IllegalStateException("Cannot parse json. Root cause:" + e.getMessage() + ". Json: \n" + jsonString, e);
     }
   }
 
@@ -33,7 +33,7 @@ public class JsonHelper {
     try {
       return objectMapper.readValue(jsonString, resultType);
     } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Cannot parse json. Rootcause:" + e.getMessage() + ". Json: \n" + jsonString, e);
+      throw new IllegalStateException("Cannot parse json. Root cause:" + e.getMessage() + ". Json: \n" + jsonString, e);
     }
   }
 

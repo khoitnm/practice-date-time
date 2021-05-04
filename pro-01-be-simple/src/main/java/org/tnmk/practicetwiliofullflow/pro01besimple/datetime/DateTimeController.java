@@ -20,40 +20,40 @@ public class DateTimeController {
   @GetMapping("/date-time")
   public DateTimeResponse generateDateTime() {
     int year = 2021;
-    int month = 12;
+    int month = 5;
     int day = 31;
     int hour = 23;
     int min = 23;
     int sec = 23;
-    int nano = 999999999;
+    int nano = 0;
     //    LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour,min, sec);
     ZonedDateTime beginZonedDateTime = ZonedDateTime.of(year, month, day, hour, min, sec, nano, ZoneId.systemDefault());
-
     int sixMonthsInSec = 6 * 30 * 24 * 60 * 60;
     ZonedDateTime endZonedDateTime = beginZonedDateTime.plus(sixMonthsInSec, ChronoUnit.SECONDS);
+    logger.info("ZoneIdSystemDefault -\t ZonedDateTime:\t {} - {}",
+        String.format("%-47s", beginZonedDateTime), endZonedDateTime);
 
-    logger.info("ZonedDateTime - ZoneIdSystemDefault: Begin: {} and Six months later: {}",
-        beginZonedDateTime, endZonedDateTime);
-
+    logger.info("ZoneIdUTC ------------------------------------------------------------------------------------------");
     ZonedDateTime beginZonedDateTimeZoneIdUTC = beginZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
     ZonedDateTime endZonedDateTimeZoneIdUTC = endZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
-    logger.info("ZonedDateTime - ZoneIdUTC: Begin: {} and Six months later: {}",
-        beginZonedDateTimeZoneIdUTC, endZonedDateTimeZoneIdUTC);
+    logger.info("ZoneIdUTC -\t\t\t ZonedDateTime:\t {} - {}",
+        String.format("%-47s", beginZonedDateTimeZoneIdUTC), endZonedDateTimeZoneIdUTC);
 
     OffsetDateTime beginOffsetDateTimeZoneIdUTC = beginZonedDateTimeZoneIdUTC.toOffsetDateTime();
     OffsetDateTime endOffsetDateTimeZoneIdUTC = endZonedDateTimeZoneIdUTC.toOffsetDateTime();
-    logger.info("OffsetDateTime - ZoneIdUTC: Begin: {} and Six months later: {}",
-        beginOffsetDateTimeZoneIdUTC, endOffsetDateTimeZoneIdUTC);
+    logger.info("ZoneIdUTC -\t\t\t OffsetDateTime: {} - {}",
+        String.format("%-47s", beginOffsetDateTimeZoneIdUTC), endOffsetDateTimeZoneIdUTC);
 
+    logger.info("ZoneOffsetUTC ------------------------------------------------------------------------------------------");
     ZonedDateTime beginZonedDateTimeZoneOffsetUTC = beginZonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
     ZonedDateTime endZonedDateTimeZoneOffsetUTC = endZonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
-    logger.info("ZonedDateTime - ZoneOffsetUTC: Begin: {} and Six months later: {}",
-        beginZonedDateTimeZoneOffsetUTC, endZonedDateTimeZoneOffsetUTC);
+    logger.info("ZoneOffsetUTC -\t\t ZonedDateTime:\t {} - {}",
+        String.format("%-47s", beginZonedDateTimeZoneOffsetUTC), endZonedDateTimeZoneOffsetUTC);
 
     OffsetDateTime beginOffsetDateTimeZoneOffsetUTC = beginZonedDateTimeZoneOffsetUTC.toOffsetDateTime();
     OffsetDateTime endOffsetDateTimeZoneOffsetUTC = endZonedDateTimeZoneOffsetUTC.toOffsetDateTime();
-    logger.info("OffsetDateTime - ZoneOffsetUTC: Begin: {} and Six months later: {}",
-        beginOffsetDateTimeZoneOffsetUTC, endOffsetDateTimeZoneOffsetUTC);
+    logger.info("ZoneOffsetUTC -\t\t OffsetDateTime: {} - {}",
+        String.format("%-47s", beginOffsetDateTimeZoneOffsetUTC), endOffsetDateTimeZoneOffsetUTC);
 
     return new DateTimeResponse(beginOffsetDateTimeZoneOffsetUTC, endOffsetDateTimeZoneOffsetUTC);
   }

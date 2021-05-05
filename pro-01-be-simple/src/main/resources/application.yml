@@ -1,7 +1,16 @@
 server:
   port: 8080
-
 spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=master
+    username: sa
+    password: Password1
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
   jackson:
     # This will help to convert string format to ZonedDateTime.
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat

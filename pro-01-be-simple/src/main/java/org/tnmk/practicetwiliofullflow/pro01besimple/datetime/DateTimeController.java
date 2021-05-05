@@ -14,12 +14,18 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.TimeZone;
+import java.util.List;
 
 @RestController
 public class DateTimeController {
   private final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final int sixMonthsInSec = 6 * 30 * 24 * 60 * 60;
+
+  private final DateTimeRepository dateTimeRepository;
+
+  public DateTimeController(DateTimeRepository dateTimeRepository) {
+    this.dateTimeRepository = dateTimeRepository;
+  }
 
   @GetMapping("/date-time/system-default-zone")
   public DateTimeResponse generateDateTimFromSystemDefaultZoneId() {
@@ -32,11 +38,13 @@ public class DateTimeController {
     DateTimeHelper.toOffsetDateTimePair("ZoneIdSystemDefault", zoneIdSystemDefault_zonedDateTimePair);
 
     logger.info("ZoneIdUTC ------------------------------------------------------------------------------------------");
-    ZonedDateTimePair zoneIdUTC_zonedDateTimePair = DateTimeHelper.toZoneDateTimePair("ZoneIdUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneId.of("UTC"));
+    ZonedDateTimePair zoneIdUTC_zonedDateTimePair = DateTimeHelper
+        .toZoneDateTimePair("ZoneIdUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneId.of("UTC"));
     DateTimeHelper.toOffsetDateTimePair("ZoneIdUTC", zoneIdUTC_zonedDateTimePair);
 
     logger.info("ZoneOffsetUTC ------------------------------------------------------------------------------------------");
-    ZonedDateTimePair zoneOffsetUTC_zonedDateTimePair = DateTimeHelper.toZoneDateTimePair("ZoneOffsetUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneOffset.UTC);
+    ZonedDateTimePair zoneOffsetUTC_zonedDateTimePair = DateTimeHelper
+        .toZoneDateTimePair("ZoneOffsetUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneOffset.UTC);
     OffsetDateTimePair zoneOffsetUTC_offsetDateTimePair = DateTimeHelper.toOffsetDateTimePair("ZoneOffsetUTC", zoneOffsetUTC_zonedDateTimePair);
 
     return new DateTimeResponse(zoneOffsetUTC_offsetDateTimePair.begin, zoneOffsetUTC_offsetDateTimePair.end);
@@ -53,6 +61,38 @@ public class DateTimeController {
     generateOffsetDateTimePair(ZoneId.systemDefault().getRules().getOffset(localDateTime), localDateTime);
 
     return null;
+  }
+
+  @GetMapping("/now")
+  public List<DateTimeEntity> nowUTC() {
+    OffsetDateTime nowOffsetDateTime = OffsetDateTime.now();
+    ZonedDateTime nowZonedDateTime = ZonedDateTime.now();
+    OffsetDateTime offsetDateTimeFromZonedDateTime = nowZonedDateTime.toOffsetDateTime();
+
+    OffsetDateTime nowOffsetDateTimeInUTC = nowOffsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
+    ZonedDateTime nowZonedDateTimeInUTC = nowZonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
+    OffsetDateTime offsetDateTime_from_nowZonedDateTimeInUTC = nowZonedDateTime.toOffsetDateTime();
+
+    logger.info(""
+            + "\nnowOffsetDateTime: {}."
+            + "\nnowZonedDateTime : {}"
+            + "\n   offset of it  : {}"
+            + "\n--------------------------"
+            + "\nnowOffsetDateTimeInUTC: {}"
+            + "\nnowZonedDateTimeInUTC : {}"
+            + "\n   offset of it       : {}",
+        nowOffsetDateTime, nowZonedDateTime, offsetDateTimeFromZonedDateTime,
+        nowOffsetDateTimeInUTC, nowZonedDateTimeInUTC, offsetDateTime_from_nowZonedDateTimeInUTC);
+
+    DateTimeEntity dateTimeEntity = new DateTimeEntity();
+    dateTimeEntity.setNowOffsetDateTime(nowOffsetDateTime);
+    dateTimeEntity.setNowZonedDateTime(nowZonedDateTime);
+    dateTimeEntity.setNowOffsetDateTimeInUTC(nowOffsetDateTimeInUTC);
+    dateTimeEntity.setNowZonedDateTimeInUTC(nowZonedDateTimeInUTC);
+    DateTimeEntity savedEntity = dateTimeRepository.save(dateTimeEntity);
+
+    List<DateTimeEntity> allEntities = dateTimeRepository.findAll();
+    return allEntities;
   }
 
   @GetMapping("/clock")

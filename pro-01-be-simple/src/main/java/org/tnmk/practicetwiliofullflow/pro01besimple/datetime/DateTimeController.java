@@ -29,17 +29,14 @@ public class DateTimeController {
 
     ZonedDateTimePair zoneIdSystemDefault_zonedDateTimePair = new ZonedDateTimePair(beginZonedDateTime, endZonedDateTime);
     DateTimeHelper.logZonedDateTimePair("ZoneIdSystemDefault", zoneIdSystemDefault_zonedDateTimePair);
-    OffsetDateTimePair zoneIdSystemDefault_offsetDateTimePair = DateTimeHelper
-        .toOffsetDateTimePair("ZoneIdSystemDefault", zoneIdSystemDefault_zonedDateTimePair);
+    DateTimeHelper.toOffsetDateTimePair("ZoneIdSystemDefault", zoneIdSystemDefault_zonedDateTimePair);
 
     logger.info("ZoneIdUTC ------------------------------------------------------------------------------------------");
-    ZonedDateTimePair zoneIdUTC_zonedDateTimePair = DateTimeHelper
-        .toZoneDateTimePair("ZoneIdUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneId.of("UTC"));
-    OffsetDateTimePair zoneIdUTC_offsetDateTimePair = DateTimeHelper.toOffsetDateTimePair("ZoneIdUTC", zoneIdUTC_zonedDateTimePair);
+    ZonedDateTimePair zoneIdUTC_zonedDateTimePair = DateTimeHelper.toZoneDateTimePair("ZoneIdUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneId.of("UTC"));
+    DateTimeHelper.toOffsetDateTimePair("ZoneIdUTC", zoneIdUTC_zonedDateTimePair);
 
     logger.info("ZoneOffsetUTC ------------------------------------------------------------------------------------------");
-    ZonedDateTimePair zoneOffsetUTC_zonedDateTimePair = DateTimeHelper
-        .toZoneDateTimePair("ZoneOffsetUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneOffset.UTC);
+    ZonedDateTimePair zoneOffsetUTC_zonedDateTimePair = DateTimeHelper.toZoneDateTimePair("ZoneOffsetUTC", zoneIdSystemDefault_zonedDateTimePair, ZoneOffset.UTC);
     OffsetDateTimePair zoneOffsetUTC_offsetDateTimePair = DateTimeHelper.toOffsetDateTimePair("ZoneOffsetUTC", zoneOffsetUTC_zonedDateTimePair);
 
     return new DateTimeResponse(zoneOffsetUTC_offsetDateTimePair.begin, zoneOffsetUTC_offsetDateTimePair.end);
@@ -91,7 +88,7 @@ public class DateTimeController {
 
   private OffsetDateTimePair generateOffsetDateTimePair(ZoneOffset zoneOffset, LocalDateTime localDateTime) {
     OffsetDateTime begin = OffsetDateTime.of(localDateTime, zoneOffset);
-    OffsetDateTime end = begin.plusMonths(6);//begin.plusSeconds(sixMonthsInSec);
+    OffsetDateTime end = begin.plusSeconds(sixMonthsInSec);//begin.plusMonths(6);//
     OffsetDateTimePair pair = new OffsetDateTimePair(begin, end);
     DateTimeHelper.logOffsetDateTimePair(zoneOffset.toString(), pair);
     return pair;

@@ -1,3 +1,11 @@
+table, td, th {
+    border: 1px solid #CCCCCC;
+    border-collapse: collapse;
+}
+td, th {
+    padding: 5px 15px;
+}
+
 .navigation-header {
     background-color: #333333;
 }

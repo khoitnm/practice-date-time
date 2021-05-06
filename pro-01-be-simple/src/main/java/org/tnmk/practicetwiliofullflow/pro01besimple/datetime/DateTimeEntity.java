@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_date_time")
@@ -17,16 +18,34 @@ public class DateTimeEntity {
   private Integer id;
 
   @Column(columnDefinition = "datetime") //by default, it would use datetime2(7), but the performance will be slower.
-  private OffsetDateTime nowOffsetDateTime;
+  private OffsetDateTime offsetDateTime;
 
   @Column(columnDefinition = "datetime")
-  private ZonedDateTime nowZonedDateTime;
+  private ZonedDateTime zonedDateTime;
 
   @Column(columnDefinition = "datetime")
-  private OffsetDateTime nowOffsetDateTimeInUTC;
+  private OffsetDateTime offsetDateTimeInUTC;
 
   @Column(columnDefinition = "datetime")
-  private ZonedDateTime nowZonedDateTimeInUTC;
+  private ZonedDateTime zonedDateTimeInUTC;
+
+  @Column(columnDefinition = "datetime")
+  private Date date;
+
+  @Column(columnDefinition = "datetime")
+  private Date dateInUTC;
+
+  @Override public String toString() {
+    return "DateTimeEntity{" +
+        "id=" + id +
+        ", offsetDateTime=" + offsetDateTime +
+        ", zonedDateTime=" + zonedDateTime +
+        ", offsetDateTimeInUTC=" + offsetDateTimeInUTC +
+        ", zonedDateTimeInUTC=" + zonedDateTimeInUTC +
+        ", date=" + date +
+        ", dateInUTC=" + dateInUTC +
+        '}';
+  }
 
   public Integer getId() {
     return id;
@@ -36,35 +55,51 @@ public class DateTimeEntity {
     this.id = id;
   }
 
-  public OffsetDateTime getNowOffsetDateTime() {
-    return nowOffsetDateTime;
+  public OffsetDateTime getOffsetDateTime() {
+    return offsetDateTime;
   }
 
-  public void setNowOffsetDateTime(OffsetDateTime nowOffsetDateTime) {
-    this.nowOffsetDateTime = nowOffsetDateTime;
+  public void setOffsetDateTime(OffsetDateTime nowOffsetDateTime) {
+    this.offsetDateTime = nowOffsetDateTime;
   }
 
-  public ZonedDateTime getNowZonedDateTime() {
-    return nowZonedDateTime;
+  public ZonedDateTime getZonedDateTime() {
+    return zonedDateTime;
   }
 
-  public void setNowZonedDateTime(ZonedDateTime nowZonedDateTime) {
-    this.nowZonedDateTime = nowZonedDateTime;
+  public void setZonedDateTime(ZonedDateTime nowZonedDateTime) {
+    this.zonedDateTime = nowZonedDateTime;
   }
 
-  public OffsetDateTime getNowOffsetDateTimeInUTC() {
-    return nowOffsetDateTimeInUTC;
+  public OffsetDateTime getOffsetDateTimeInUTC() {
+    return offsetDateTimeInUTC;
   }
 
-  public void setNowOffsetDateTimeInUTC(OffsetDateTime nowOffsetDateTimeInUTC) {
-    this.nowOffsetDateTimeInUTC = nowOffsetDateTimeInUTC;
+  public void setOffsetDateTimeInUTC(OffsetDateTime nowOffsetDateTimeInUTC) {
+    this.offsetDateTimeInUTC = nowOffsetDateTimeInUTC;
   }
 
-  public ZonedDateTime getNowZonedDateTimeInUTC() {
-    return nowZonedDateTimeInUTC;
+  public ZonedDateTime getZonedDateTimeInUTC() {
+    return zonedDateTimeInUTC;
   }
 
-  public void setNowZonedDateTimeInUTC(ZonedDateTime nowZonedDateTimeInUTC) {
-    this.nowZonedDateTimeInUTC = nowZonedDateTimeInUTC;
+  public void setZonedDateTimeInUTC(ZonedDateTime nowZonedDateTimeInUTC) {
+    this.zonedDateTimeInUTC = nowZonedDateTimeInUTC;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  public Date getDateInUTC() {
+    return dateInUTC;
+  }
+
+  public void setDateInUTC(Date dateInUTC) {
+    this.dateInUTC = dateInUTC;
   }
 }

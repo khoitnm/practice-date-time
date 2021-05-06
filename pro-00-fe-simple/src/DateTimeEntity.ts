@@ -1,7 +1,15 @@
 export interface DateTimeEntity{
   id:number;
-  nowOffsetDateTime: Date;
-  nowZonedDateTime: Date;
-  nowOffsetDateTimeInUTC: Date;
-  nowZonedDateTimeInUTC: Date;
+  offsetDateTime: string;
+  offsetDateTimeDate: Date;
+  zonedDateTime: string;
+  zonedDateTimeDate: Date;
+  offsetDateTimeInUTC: string;
+  offsetDateTimeInUTCDate: Date;
+  zonedDateTimeInUTC: string;
+  zonedDateTimeInUTCDate: Date;
+  date: string;
+  dateDate: Date;
+  dateInUTC: string;
+  dateInUTCDate: Date;
 }

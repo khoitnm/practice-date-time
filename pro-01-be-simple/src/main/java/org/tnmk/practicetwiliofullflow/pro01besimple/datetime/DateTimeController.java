@@ -14,7 +14,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.TimeZone;
 
 @RestController
 public class DateTimeController {
@@ -64,7 +67,7 @@ public class DateTimeController {
   }
 
   @GetMapping("/now")
-  public List<DateTimeEntity> nowUTC() {
+  public DateTimeEntity nowUTC() {
     OffsetDateTime nowOffsetDateTime = OffsetDateTime.now();
     ZonedDateTime nowZonedDateTime = ZonedDateTime.now();
     OffsetDateTime offsetDateTimeFromZonedDateTime = nowZonedDateTime.toOffsetDateTime();
@@ -85,14 +88,23 @@ public class DateTimeController {
         nowOffsetDateTimeInUTC, nowZonedDateTimeInUTC, offsetDateTime_from_nowZonedDateTimeInUTC);
 
     DateTimeEntity dateTimeEntity = new DateTimeEntity();
-    dateTimeEntity.setNowOffsetDateTime(nowOffsetDateTime);
-    dateTimeEntity.setNowZonedDateTime(nowZonedDateTime);
-    dateTimeEntity.setNowOffsetDateTimeInUTC(nowOffsetDateTimeInUTC);
-    dateTimeEntity.setNowZonedDateTimeInUTC(nowZonedDateTimeInUTC);
+    dateTimeEntity.setOffsetDateTime(nowOffsetDateTime);
+    dateTimeEntity.setZonedDateTime(nowZonedDateTime);
+    dateTimeEntity.setOffsetDateTimeInUTC(nowOffsetDateTimeInUTC);
+    dateTimeEntity.setZonedDateTimeInUTC(nowZonedDateTimeInUTC);
+
+//    TimeZone.setDefault(TimeZone.getDefault());
+    logger.info("Default TimeZone: {}", TimeZone.getDefault());
+    dateTimeEntity.setDate(new Date());
+    dateTimeEntity.setDateInUTC(Date.from(Instant.now()));
+
     DateTimeEntity savedEntity = dateTimeRepository.save(dateTimeEntity);
 
     List<DateTimeEntity> allEntities = dateTimeRepository.findAll();
-    return allEntities;
+    Optional<DateTimeEntity> dataFromDB = allEntities.stream()
+        .filter(entity -> entity.getId().equals(savedEntity.getId()))
+        .findFirst();
+    return dataFromDB.get();
   }
 
   @GetMapping("/clock")

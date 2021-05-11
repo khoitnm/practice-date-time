@@ -1,17 +1,25 @@
 import {DateTimeEntity} from "./DateTimeEntity";
 import beAxios from "./common/be-axios/beAxios";
+import DateTimeResult from "./DateTimeResult";
+
+const convertDateTime =(dateTimeEntity: DateTimeEntity): void => {
+  dateTimeEntity.dateDate = new Date(dateTimeEntity.date);
+  dateTimeEntity.dateInUTCDate = new Date(dateTimeEntity.dateInUTC);
+  dateTimeEntity.offsetDateTimeDate = new Date(dateTimeEntity.offsetDateTime);
+  dateTimeEntity.offsetDateTimeInUTCDate = new Date(dateTimeEntity.offsetDateTimeInUTC);
+  dateTimeEntity.zonedDateTimeDate = new Date(dateTimeEntity.zonedDateTime);
+  dateTimeEntity.zonedDateTimeInUTCDate = new Date(dateTimeEntity.zonedDateTimeInUTC);
+}
 
 const dateTimeBeService = {
-  now: async (): Promise<DateTimeEntity> =>  {
-    const axiosResponse = await beAxios.get<DateTimeEntity>(`/now`);
+  now: async (): Promise<DateTimeResult> =>  {
+    const axiosResponse = await beAxios.get<DateTimeResult>(`/now`);
     const rawResult = axiosResponse.data;
-    rawResult.dateDate = new Date(rawResult.date);
-    rawResult.dateInUTCDate = new Date(rawResult.dateInUTC);
-    rawResult.offsetDateTimeDate = new Date(rawResult.offsetDateTime);
-    rawResult.offsetDateTimeInUTCDate = new Date(rawResult.offsetDateTimeInUTC);
-    rawResult.zonedDateTimeDate = new Date(rawResult.zonedDateTime);
-    rawResult.zonedDateTimeInUTCDate = new Date(rawResult.zonedDateTimeInUTC);
+    convertDateTime(rawResult.now);
+    convertDateTime(rawResult.sixMonths);
     return rawResult;
   }
+
+
 }
 export default dateTimeBeService;

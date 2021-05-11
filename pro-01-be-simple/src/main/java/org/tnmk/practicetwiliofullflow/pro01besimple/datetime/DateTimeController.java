@@ -67,37 +67,71 @@ public class DateTimeController {
   }
 
   @GetMapping("/now")
-  public DateTimeEntity nowUTC() {
+  public DateTimeResult nowUTC() {
     OffsetDateTime nowOffsetDateTime = OffsetDateTime.now();
     ZonedDateTime nowZonedDateTime = ZonedDateTime.now();
-    OffsetDateTime offsetDateTimeFromZonedDateTime = nowZonedDateTime.toOffsetDateTime();
+    DateTimeEntity nowDateTimeEntity = reportDateTime(nowOffsetDateTime, nowZonedDateTime);
 
-    OffsetDateTime nowOffsetDateTimeInUTC = nowOffsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
-    ZonedDateTime nowZonedDateTimeInUTC = nowZonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
-    OffsetDateTime offsetDateTime_from_nowZonedDateTimeInUTC = nowZonedDateTime.toOffsetDateTime();
+//    OffsetDateTime sixMonths_OffsetDateTime = nowOffsetDateTime.plusSeconds(sixMonthsInSec);
+//    ZonedDateTime sixMonths_ZonedDateTime = nowZonedDateTime.plusSeconds(sixMonthsInSec);
+
+    OffsetDateTime sixMonths_OffsetDateTime = nowOffsetDateTime.plusMonths(6);
+    ZonedDateTime sixMonths_ZonedDateTime = nowZonedDateTime.plusMonths(6);
+    DateTimeEntity sixMonths_DateTimeEntity = reportDateTime(sixMonths_OffsetDateTime, sixMonths_ZonedDateTime);
+
+    DateTimeEntity loadedNow = saveIntoDBAndReload(nowDateTimeEntity);
+    DateTimeEntity loadedSixMonths = saveIntoDBAndReload(sixMonths_DateTimeEntity);
+    return new DateTimeResult(loadedNow, loadedSixMonths);
+  }
+
+  private DateTimeEntity reportDateTime(OffsetDateTime offsetDateTime, ZonedDateTime zonedDateTime){
+    OffsetDateTime zonedDateTimeToOffsetDateTime = zonedDateTime.toOffsetDateTime();
+    OffsetDateTime offsetDateTime_from_ZonedDateTime = OffsetDateTime.of(zonedDateTime.toLocalDateTime(), zonedDateTime.getOffset());
+
+    OffsetDateTime offsetDateTimeInUTC = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
+    ZonedDateTime zonedDateTimeInUTC = zonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
+    OffsetDateTime zonedDateTimeInUTCToOffsetDateTime = zonedDateTime.toOffsetDateTime();
+    OffsetDateTime offsetDateTime_from_ZonedDateTimeInUTC = OffsetDateTime.of(zonedDateTimeInUTC.toLocalDateTime(), ZoneOffset.UTC);
 
     logger.info(""
-            + "\nnowOffsetDateTime: {}."
-            + "\nnowZonedDateTime : {}"
-            + "\n   offset of it  : {}"
+            + "\noffsetDateTime     : {}."
+            + "\nzonedDateTime      : {}"
+            + "\n   toOffsetDateTime: {}"
+            + "\n   offsetDateTime  : {}"
             + "\n--------------------------"
-            + "\nnowOffsetDateTimeInUTC: {}"
-            + "\nnowZonedDateTimeInUTC : {}"
-            + "\n   offset of it       : {}",
-        nowOffsetDateTime, nowZonedDateTime, offsetDateTimeFromZonedDateTime,
-        nowOffsetDateTimeInUTC, nowZonedDateTimeInUTC, offsetDateTime_from_nowZonedDateTimeInUTC);
+            + "\noffsetDateTimeInUTC: {}"
+            + "\nzonedDateTimeInUTC : {}"
+            + "\n   toOffsetDateTime: {}"
+            + "\n   offsetDateTime  : {}"
+        ,
+        offsetDateTime, zonedDateTime, zonedDateTimeToOffsetDateTime, offsetDateTime_from_ZonedDateTime,
+        offsetDateTimeInUTC, zonedDateTimeInUTC, zonedDateTimeInUTCToOffsetDateTime, offsetDateTime_from_ZonedDateTimeInUTC);
+
+    DateTimeEntity dateTimeEntity = constructDateTimeEntity(offsetDateTime, zonedDateTime, zonedDateTimeToOffsetDateTime,
+        offsetDateTimeInUTC, zonedDateTimeInUTC, zonedDateTimeInUTCToOffsetDateTime);
+    return dateTimeEntity;
+  }
+
+  private DateTimeEntity constructDateTimeEntity(
+      OffsetDateTime nowOffsetDateTime, ZonedDateTime nowZonedDateTime, OffsetDateTime nowZonedDateTimeToOffsetDateTime,
+      OffsetDateTime nowOffsetDateTimeInUTC, ZonedDateTime nowZonedDateTimeInUTC, OffsetDateTime nowZonedDateTimeInUTCToOffsetDateTime) {
 
     DateTimeEntity dateTimeEntity = new DateTimeEntity();
     dateTimeEntity.setOffsetDateTime(nowOffsetDateTime);
     dateTimeEntity.setZonedDateTime(nowZonedDateTime);
+    dateTimeEntity.setZonedDateTimeToOffsetDateTime(nowZonedDateTimeToOffsetDateTime);
     dateTimeEntity.setOffsetDateTimeInUTC(nowOffsetDateTimeInUTC);
     dateTimeEntity.setZonedDateTimeInUTC(nowZonedDateTimeInUTC);
+    dateTimeEntity.setZonedDateTimeInUTCToOffsetDateTime(nowZonedDateTimeInUTCToOffsetDateTime);
 
-//    TimeZone.setDefault(TimeZone.getDefault());
+    //    TimeZone.setDefault(TimeZone.getDefault());
     logger.info("Default TimeZone: {}", TimeZone.getDefault());
     dateTimeEntity.setDate(new Date());
     dateTimeEntity.setDateInUTC(Date.from(Instant.now()));
+    return dateTimeEntity;
+  }
 
+  private DateTimeEntity saveIntoDBAndReload(DateTimeEntity dateTimeEntity) {
     DateTimeEntity savedEntity = dateTimeRepository.save(dateTimeEntity);
 
     List<DateTimeEntity> allEntities = dateTimeRepository.findAll();

@@ -22,12 +22,14 @@ public class DateTimeEntity {
 
   @Column(columnDefinition = "datetime")
   private ZonedDateTime zonedDateTime;
+  private OffsetDateTime zonedDateTimeToOffsetDateTime;
 
   @Column(columnDefinition = "datetime")
   private OffsetDateTime offsetDateTimeInUTC;
 
   @Column(columnDefinition = "datetime")
   private ZonedDateTime zonedDateTimeInUTC;
+  private OffsetDateTime zonedDateTimeInUTCToOffsetDateTime;
 
   @Column(columnDefinition = "datetime")
   private Date date;
@@ -101,5 +103,21 @@ public class DateTimeEntity {
 
   public void setDateInUTC(Date dateInUTC) {
     this.dateInUTC = dateInUTC;
+  }
+
+  public OffsetDateTime getZonedDateTimeInUTCToOffsetDateTime() {
+    return zonedDateTimeInUTCToOffsetDateTime;
+  }
+
+  public void setZonedDateTimeInUTCToOffsetDateTime(OffsetDateTime zonedDateTimeInUTCToOffsetDateTime) {
+    this.zonedDateTimeInUTCToOffsetDateTime = zonedDateTimeInUTCToOffsetDateTime;
+  }
+
+  public OffsetDateTime getZonedDateTimeToOffsetDateTime() {
+    return zonedDateTimeToOffsetDateTime;
+  }
+
+  public void setZonedDateTimeToOffsetDateTime(OffsetDateTime zonedDateTimeToOffsetDateTime) {
+    this.zonedDateTimeToOffsetDateTime = zonedDateTimeToOffsetDateTime;
   }
 }
